@@ -97,7 +97,7 @@ function App() {
     }
   }
   return (
-    <div>
+    <div className="App">
       {content}
       <pre>{JSON.stringify(state, null, 2)}</pre>
     </div>
