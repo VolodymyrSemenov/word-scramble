@@ -54,19 +54,20 @@ function reducer(state: State, action: Action): State {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
-
+  let content = null;
   switch (state.phase) {
     case "pre-game": {
-      return (
+      content = (
         <button onClick={() => dispatch({ type: "start-game" })}>
           Begin new game
         </button>
       );
+      break;
     }
 
     case "in-game": {
-      return (
-        <div>
+      content = (
+        <>
           <div>Goal: {state.goal}</div>
           <label>
             Guess:
@@ -78,21 +79,29 @@ function App() {
               }
             />
           </label>
-        </div>
+        </>
       );
+      break;
     }
 
     case "post-game": {
-      return (
-        <div>
+      content = (
+        <>
           <div>Nice game! You guessed {state.goal}</div>
           <button onClick={() => dispatch({ type: "start-game" })}>
             Begin new game
           </button>
-        </div>
+        </>
       );
+      break;
     }
   }
+  return (
+    <div>
+      {content}
+      <pre>{JSON.stringify(state, null, 2)}</pre>
+    </div>
+  );
 }
 
 export default App;
