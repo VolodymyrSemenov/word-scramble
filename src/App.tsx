@@ -1,5 +1,6 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
+import { getRandom, scrambleWord } from "./util";
 
 type WordPack = readonly string[];
 type State = Readonly<
@@ -43,24 +44,6 @@ function getInitialState(): State {
     phase: "pre-game",
     wordpack: null,
   };
-}
-
-function getRandom<T>(arr: readonly T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function scrambleWord(word: string): string {
-  let ret: string[] = [];
-  let availableLetters = Array.from(word);
-  Array.from(word).forEach((_, idx) => {
-    const chosenIdx = Math.floor(Math.random() * (word.length - idx));
-    ret.push(word[chosenIdx]);
-    [availableLetters[chosenIdx], availableLetters[word.length - 1]] = [
-      availableLetters[word.length - 1],
-      availableLetters[chosenIdx],
-    ];
-  });
-  return availableLetters.join("");
 }
 
 function reducer(state: State, action: Action): State {
