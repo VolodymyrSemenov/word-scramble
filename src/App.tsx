@@ -1,7 +1,5 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
-import { getRandom, scrambleWord } from "./util";
-import { WordPack, Action, State } from "./types";
 import { reducer, getInitialState } from "./reducer";
 
 function App() {
