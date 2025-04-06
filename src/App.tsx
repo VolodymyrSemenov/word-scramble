@@ -45,8 +45,8 @@ function getInitialState(): State {
   };
 }
 
-function getRandomWord(wordpack: WordPack): string {
-  return wordpack[Math.floor(Math.random() * wordpack.length)];
+function getRandom<T>(arr: readonly T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function scrambleWord(word: string): string {
@@ -72,7 +72,7 @@ function reducer(state: State, action: Action): State {
       if (state.wordpack === null) {
         return state;
       }
-      const newWord: string = getRandomWord(state.wordpack);
+      const newWord: string = getRandom(state.wordpack);
       return {
         phase: "in-game",
         goal: newWord,
@@ -89,7 +89,7 @@ function reducer(state: State, action: Action): State {
       if (
         action.newGuess.trim().toUpperCase().replace(/ +/, " ") === state.goal
       ) {
-        const newWord: string = getRandomWord(state.wordpack);
+        const newWord: string = getRandom(state.wordpack);
         return {
           ...state,
           goal: newWord,
