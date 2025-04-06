@@ -79,7 +79,7 @@ function reducer(state: State, action: Action): State {
     case "load-wordpack": {
       return {
         ...state,
-        wordpack: action.wordpack
+        wordpack: action.wordpack,
       };
     }
   }
@@ -89,24 +89,30 @@ function reducer(state: State, action: Action): State {
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
   useEffect(() => {
-    fetch(
-      "word-scramble/wordle_answers.txt"
-    )
+    fetch("word-scramble/wordle_answers.txt")
       .then((response) => response.text())
-      .then((text) =>
-        dispatch({
-          type: "load-wordpack",
-          wordpack: text
-            .split("\n")
-            .map((word) => word.toUpperCase().trim())
-            .filter(Boolean),
-        }),
-      );
+      .then((text) => {
+        setTimeout(
+          () =>
+            dispatch({
+              type: "load-wordpack",
+              wordpack: text
+                .split("\n")
+                .map((word) => word.toUpperCase().trim())
+                .filter(Boolean),
+            }),
+          3000,
+        );
+      });
   }, []);
 
   let content = null;
   switch (state.phase) {
     case "pre-game": {
+      if (state.wordpack === null) {
+        content = <div>Loading Wordpack...</div>;
+        break;
+      }
       content = (
         <button onClick={() => dispatch({ type: "start-game" })}>
           Begin new game
