@@ -5,7 +5,7 @@ import { reducer, getInitialState } from "./reducer";
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
   useEffect(() => {
-    fetch("word-scramble/wordle_answers.txt")
+    fetch("./wordle_answers.txt")
       .then((response) => response.text())
       .then((text) => {
         setTimeout(
