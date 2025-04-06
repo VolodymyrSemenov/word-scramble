@@ -1,43 +1,7 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
 import { getRandom, scrambleWord } from "./util";
-
-type WordPack = readonly string[];
-type State = Readonly<
-  | {
-      phase: "pre-game";
-      wordpack: WordPack | null;
-    }
-  | {
-      phase: "in-game";
-      goal: string;
-      scrambled: string;
-      guess: string;
-      score: number;
-      wordpack: WordPack;
-    }
-  | {
-      phase: "post-game";
-      score: number;
-      wordpack: WordPack;
-    }
->;
-
-type Action =
-  | {
-      type: "start-game";
-    }
-  | {
-      type: "update-guess";
-      newGuess: string;
-    }
-  | {
-      type: "load-wordpack";
-      wordpack: WordPack;
-    }
-  | {
-      type: "end-game";
-    };
+import { WordPack, Action, State } from "./types";
 
 function getInitialState(): State {
   return {
