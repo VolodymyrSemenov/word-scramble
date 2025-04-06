@@ -64,7 +64,7 @@ function reducer(state: State, action: Action): State {
       if (state.phase !== "in-game") {
         return state;
       }
-      if (action.newGuess === state.goal) {
+      if (action.newGuess.trim().toUpperCase().replace(/ +/, ' ') === state.goal) {
         return {
           phase: "post-game",
           goal: state.goal,
