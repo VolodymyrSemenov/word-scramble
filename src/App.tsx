@@ -11,11 +11,12 @@ type State = Readonly<
       phase: "in-game";
       goal: string;
       guess: string;
+      score: number;
       wordpack: WordPack;
     }
   | {
       phase: "post-game";
-      goal: string;
+      score: number
       wordpack: WordPack;
     }
 >;
@@ -31,6 +32,9 @@ type Action =
   | {
       type: "load-wordpack";
       wordpack: WordPack;
+    }
+  | {
+      type: "end-game";
     };
 
 function getInitialState(): State {
@@ -58,16 +62,21 @@ function reducer(state: State, action: Action): State {
         goal: getRandomWord(state.wordpack),
         guess: "",
         wordpack: state.wordpack,
+        score: 0,
       };
     }
     case "update-guess": {
       if (state.phase !== "in-game") {
         return state;
       }
-      if (action.newGuess.trim().toUpperCase().replace(/ +/, ' ') === state.goal) {
+      if (
+        action.newGuess.trim().toUpperCase().replace(/ +/, " ") === state.goal
+      ) {
         return {
-          phase: "post-game",
-          goal: state.goal,
+          phase: "in-game",
+          goal: getRandomWord(state.wordpack),
+          guess: "",
+          score: state.score + 1,
           wordpack: state.wordpack,
         };
       }
@@ -80,6 +89,16 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         wordpack: action.wordpack,
+      };
+    }
+    case "end-game": {
+      if (state.phase !== "in-game") {
+        return state;
+      }
+      return {
+        phase: "post-game",
+        score: state.score,
+        wordpack: state.wordpack,
       };
     }
   }
@@ -135,6 +154,9 @@ function App() {
               }
             />
           </label>
+          <button onClick={() => dispatch({ type: "end-game" })}>
+            End Game
+          </button>
         </>
       );
       break;
@@ -143,7 +165,7 @@ function App() {
     case "post-game": {
       content = (
         <>
-          <div>Nice game! You guessed {state.goal}</div>
+          <div>Nice game! You guessed {state.score} words right!</div>
           <button onClick={() => dispatch({ type: "start-game" })}>
             Begin new game
           </button>
