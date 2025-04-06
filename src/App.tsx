@@ -1,22 +1,22 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
 
-type wordPack = readonly string[];
+type WordPack = readonly string[];
 type State = Readonly<
   | {
       phase: "pre-game";
-      wordpack: wordPack | null;
+      wordpack: WordPack | null;
     }
   | {
       phase: "in-game";
       goal: string;
       guess: string;
-      wordpack: wordPack;
+      wordpack: WordPack;
     }
   | {
       phase: "post-game";
       goal: string;
-      wordpack: wordPack;
+      wordpack: WordPack;
     }
 >;
 
@@ -30,7 +30,7 @@ type Action =
     }
   | {
       type: "load-wordpack";
-      wordpack: wordPack;
+      wordpack: WordPack;
     };
 
 function getInitialState(): State {
@@ -40,8 +40,8 @@ function getInitialState(): State {
   };
 }
 
-function getRandomWord() {
-  return "Apple";
+function getRandomWord(wordpack: WordPack): string {
+  return wordpack[Math.floor(Math.random() * wordpack.length)];
 }
 
 function reducer(state: State, action: Action): State {
@@ -55,7 +55,7 @@ function reducer(state: State, action: Action): State {
       }
       return {
         phase: "in-game",
-        goal: getRandomWord(),
+        goal: getRandomWord(state.wordpack),
         guess: "",
         wordpack: state.wordpack,
       };
@@ -90,7 +90,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
   useEffect(() => {
     fetch(
-      "https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/6bfa15d263d6d5b63840a8e5b64e04b382fdb079/valid-wordle-words.txt",
+      "word-scramble/wordle_answers.txt"
     )
       .then((response) => response.text())
       .then((text) =>
