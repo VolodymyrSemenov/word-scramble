@@ -2,73 +2,7 @@ import "./App.css";
 import React, { useReducer, useEffect } from "react";
 import { getRandom, scrambleWord } from "./util";
 import { WordPack, Action, State } from "./types";
-
-function getInitialState(): State {
-  return {
-    phase: "pre-game",
-    wordpack: null,
-  };
-}
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "start-game": {
-      if (state.phase === "in-game") {
-        return state;
-      }
-      if (state.wordpack === null) {
-        return state;
-      }
-      const newWord: string = getRandom(state.wordpack);
-      return {
-        phase: "in-game",
-        goal: newWord,
-        guess: "",
-        scrambled: scrambleWord(newWord),
-        wordpack: state.wordpack,
-        score: 0,
-      };
-    }
-    case "update-guess": {
-      if (state.phase !== "in-game") {
-        return state;
-      }
-      if (
-        action.newGuess.trim().toUpperCase().replace(/ +/, " ") === state.goal
-      ) {
-        const newWord: string = getRandom(state.wordpack);
-        return {
-          ...state,
-          goal: newWord,
-          guess: "",
-          scrambled: scrambleWord(newWord),
-          score: state.score + 1,
-        };
-      }
-      return {
-        ...state,
-        guess: action.newGuess,
-      };
-    }
-    case "load-wordpack": {
-      return {
-        ...state,
-        wordpack: action.wordpack,
-      };
-    }
-    case "end-game": {
-      if (state.phase !== "in-game") {
-        return state;
-      }
-      return {
-        phase: "post-game",
-        score: state.score,
-        wordpack: state.wordpack,
-      };
-    }
-  }
-  return state;
-}
+import { reducer, getInitialState } from "./reducer";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
