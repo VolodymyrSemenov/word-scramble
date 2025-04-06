@@ -11,6 +11,7 @@ type State = Readonly<
       guess: string;
       score: number;
       wordpack: WordPack;
+      letters_revealed: number;
     }
   | {
       phase: "post-game";
@@ -33,6 +34,9 @@ type Action =
     }
   | {
       type: "end-game";
+    }
+  | {
+      type: "get-hint";
     };
 
 export type { WordPack, Action, State };

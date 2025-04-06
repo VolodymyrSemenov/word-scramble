@@ -25,6 +25,7 @@ function reducer(state: State, action: Action): State {
         scrambled: scrambleWord(newWord),
         wordpack: state.wordpack,
         score: 0,
+        letters_revealed: 0
       };
     }
     case "update-guess": {
@@ -63,6 +64,15 @@ function reducer(state: State, action: Action): State {
         score: state.score,
         wordpack: state.wordpack,
       };
+    }
+    case "get-hint": {
+      if (state.phase !== "in-game") {
+        return state;
+      }
+      return {
+        ...state,
+        letters_revealed: state.letters_revealed+1
+      }
     }
   }
   return state;

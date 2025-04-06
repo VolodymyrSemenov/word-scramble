@@ -56,6 +56,9 @@ function App() {
           <button onClick={() => dispatch({ type: "end-game" })}>
             End Game
           </button>
+          <button onClick={() => dispatch({type: "get-hint"})}>
+            Get Hint
+          </button>
         </>
       );
       break;
