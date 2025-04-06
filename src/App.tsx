@@ -10,13 +10,14 @@ type State = Readonly<
   | {
       phase: "in-game";
       goal: string;
+      scrambled: string;
       guess: string;
       score: number;
       wordpack: WordPack;
     }
   | {
       phase: "post-game";
-      score: number
+      score: number;
       wordpack: WordPack;
     }
 >;
@@ -48,6 +49,20 @@ function getRandomWord(wordpack: WordPack): string {
   return wordpack[Math.floor(Math.random() * wordpack.length)];
 }
 
+function scrambleWord(word: string): string {
+  let ret: string[] = [];
+  let availableLetters = Array.from(word);
+  Array.from(word).forEach((_, idx) => {
+    const chosenIdx = Math.floor(Math.random() * (word.length - idx));
+    ret.push(word[chosenIdx]);
+    [availableLetters[chosenIdx], availableLetters[word.length - 1]] = [
+      availableLetters[word.length - 1],
+      availableLetters[chosenIdx],
+    ];
+  });
+  return availableLetters.join("");
+}
+
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "start-game": {
@@ -57,10 +72,12 @@ function reducer(state: State, action: Action): State {
       if (state.wordpack === null) {
         return state;
       }
+      const newWord: string = getRandomWord(state.wordpack);
       return {
         phase: "in-game",
-        goal: getRandomWord(state.wordpack),
+        goal: newWord,
         guess: "",
+        scrambled: scrambleWord(newWord),
         wordpack: state.wordpack,
         score: 0,
       };
@@ -72,12 +89,13 @@ function reducer(state: State, action: Action): State {
       if (
         action.newGuess.trim().toUpperCase().replace(/ +/, " ") === state.goal
       ) {
+        const newWord: string = getRandomWord(state.wordpack);
         return {
-          phase: "in-game",
-          goal: getRandomWord(state.wordpack),
+          ...state,
+          goal: newWord,
           guess: "",
+          scrambled: scrambleWord(newWord),
           score: state.score + 1,
-          wordpack: state.wordpack,
         };
       }
       return {
@@ -143,7 +161,7 @@ function App() {
     case "in-game": {
       content = (
         <>
-          <div>Goal: {state.goal}</div>
+          <div>Scrambled Word: {state.scrambled}</div>
           <label>
             Guess:
             <input
