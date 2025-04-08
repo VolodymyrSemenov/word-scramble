@@ -30,7 +30,7 @@ function App() {
         break;
       }
       content = (
-        <button onClick={() => dispatch({ type: "start-game" })}>
+        <button onClick={() => dispatch({ type: "start-game" })} autoFocus>
           Begin new game
         </button>
       );
@@ -52,6 +52,7 @@ function App() {
               onChange={(ev) =>
                 dispatch({ type: "update-guess", newGuess: ev.target.value })
               }
+              autoFocus
             />
           </label>
           <button onClick={() => dispatch({ type: "get-hint" })}>
@@ -69,7 +70,7 @@ function App() {
       content = (
         <>
           <div>Nice game! You guessed {state.score} words right!</div>
-          <button onClick={() => dispatch({ type: "start-game" })}>
+          <button onClick={() => dispatch({ type: "start-game" })} autoFocus>
             Begin new game
           </button>
         </>
