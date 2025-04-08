@@ -52,6 +52,7 @@ function App() {
               onChange={(ev) =>
                 dispatch({ type: "update-guess", newGuess: ev.target.value })
               }
+              className="Textbox"
               autoFocus
             />
           </label>

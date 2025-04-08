@@ -5,3 +5,7 @@
   align-items: center;
   padding: 20px;
 }
+
+.Textbox {
+  text-transform: uppercase;
+}
