@@ -37,6 +37,12 @@ function reducer(state: State, action: Action): State {
       if (state.phase !== "in-game") {
         return state;
       }
+
+      const newGuess = action.newGuess.slice(0, state.revealed_letters)
+      const revealed_letters = state.goal.slice(0, state.revealed_letters)
+      if (!wordsMatch(newGuess, revealed_letters)) { // If user removes hinted letters, ignore
+        return state;
+      }
       if (wordsMatch(action.newGuess, state.goal)) {
         return {
           ...newWordState(state.wordpack),
