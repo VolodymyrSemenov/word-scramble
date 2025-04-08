@@ -4,6 +4,8 @@ import { reducer, getInitialState } from "./reducer";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
+  const guessInputRef = React.useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     fetch("./wordle_answers.txt")
       .then((response) => response.text())
@@ -49,6 +51,7 @@ function App() {
             <input
               type="text"
               value={state.guess}
+              ref={guessInputRef}
               onChange={(ev) =>
                 dispatch({ type: "update-guess", newGuess: ev.target.value })
               }
@@ -56,7 +59,12 @@ function App() {
               autoFocus
             />
           </label>
-          <button onClick={() => dispatch({ type: "get-hint" })}>
+          <button
+            onClick={() => {
+              dispatch({ type: "get-hint" });
+              guessInputRef.current?.focus();
+            }}
+          >
             Get Hint
           </button>
           <button onClick={() => dispatch({ type: "end-game" })}>
