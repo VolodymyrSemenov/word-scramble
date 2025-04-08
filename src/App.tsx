@@ -39,7 +39,10 @@ function App() {
       content = (
         <>
           <div>
-            Scrambled Word: <span className="GuessedText">{state.goal.slice(0, state.revealed_letters)}</span>
+            Scrambled Word:{" "}
+            <span className="GuessedText">
+              {state.goal.slice(0, state.revealed_letters)}
+            </span>
             {state.scrambled.slice(state.revealed_letters)}
           </div>
           <label>
@@ -64,7 +67,10 @@ function App() {
           >
             Get Hint
           </button>
-          <button className="Red" onClick={() => dispatch({ type: "end-game" })}>
+          <button
+            className="Red"
+            onClick={() => dispatch({ type: "end-game" })}
+          >
             End Game
           </button>
         </>
