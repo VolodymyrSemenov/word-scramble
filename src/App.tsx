@@ -10,17 +10,13 @@ function App() {
     fetch("./wordle_answers.txt")
       .then((response) => response.text())
       .then((text) => {
-        setTimeout(
-          () =>
-            dispatch({
-              type: "load-wordpack",
-              wordpack: text
-                .split("\n")
-                .map((word) => word.toUpperCase().trim())
-                .filter(Boolean),
-            }),
-          3000,
-        );
+        dispatch({
+          type: "load-wordpack",
+          wordpack: text
+            .split("\n")
+            .map((word) => word.toUpperCase().trim())
+            .filter(Boolean),
+        });
       });
   }, []);
 
@@ -43,7 +39,7 @@ function App() {
       content = (
         <>
           <div>
-            Scrambled Word: {state.goal.slice(0, state.revealed_letters)}{" "}
+            Scrambled Word: <span className="GuessedText">{state.goal.slice(0, state.revealed_letters)}</span>
             {state.scrambled.slice(state.revealed_letters)}
           </div>
           <label>
@@ -64,10 +60,11 @@ function App() {
               dispatch({ type: "get-hint" });
               guessInputRef.current?.focus();
             }}
+            className="Green"
           >
             Get Hint
           </button>
-          <button onClick={() => dispatch({ type: "end-game" })}>
+          <button className="Red" onClick={() => dispatch({ type: "end-game" })}>
             End Game
           </button>
         </>
@@ -87,12 +84,7 @@ function App() {
       break;
     }
   }
-  return (
-    <div className="App">
-      {content}
-      <pre>{JSON.stringify(state, null, 2)}</pre>
-    </div>
-  );
+  return <div className="App">{content}</div>;
 }
 
 export default App;
