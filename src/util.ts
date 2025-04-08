@@ -16,4 +16,10 @@ function scrambleWord(word: string): string {
   return availableLetters.join("");
 }
 
-export { getRandom, scrambleWord };
+function wordsMatch(word1: string, word2: string): boolean {
+  const word1Cleaned = word1.trim().toUpperCase().replace(/ +/, " ");
+  const word2Cleaned = word2.trim().toUpperCase().replace(/ +/, " ");
+  return word1Cleaned === word2Cleaned;
+}
+
+export { getRandom, scrambleWord, wordsMatch };

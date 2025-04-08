@@ -1,10 +1,23 @@
-import { State, Action } from "./types";
-import { getRandom, scrambleWord } from "./util";
+import { State, Action, WordPack, InGameState } from "./types";
+import { getRandom, scrambleWord, wordsMatch } from "./util";
 
 function getInitialState(): State {
   return {
     phase: "pre-game",
     wordpack: null,
+  };
+}
+
+function newWordState(wordpack: WordPack): InGameState {
+  const newWord: string = getRandom(wordpack);
+  return {
+    phase: "in-game",
+    goal: newWord,
+    guess: "",
+    scrambled: scrambleWord(newWord),
+    score: 0,
+    revealed_letters: 0,
+    wordpack: wordpack,
   };
 }
 
@@ -17,30 +30,16 @@ function reducer(state: State, action: Action): State {
       if (state.wordpack === null) {
         return state;
       }
-      const newWord: string = getRandom(state.wordpack);
-      return {
-        phase: "in-game",
-        goal: newWord,
-        guess: "",
-        scrambled: scrambleWord(newWord),
-        wordpack: state.wordpack,
-        score: 0,
-        letters_revealed: 0
-      };
+      return newWordState(state.wordpack);
     }
+
     case "update-guess": {
       if (state.phase !== "in-game") {
         return state;
       }
-      if (
-        action.newGuess.trim().toUpperCase().replace(/ +/, " ") === state.goal
-      ) {
-        const newWord: string = getRandom(state.wordpack);
+      if (wordsMatch(action.newGuess, state.goal)) {
         return {
-          ...state,
-          goal: newWord,
-          guess: "",
-          scrambled: scrambleWord(newWord),
+          ...newWordState(state.wordpack),
           score: state.score + 1,
         };
       }
@@ -49,12 +48,14 @@ function reducer(state: State, action: Action): State {
         guess: action.newGuess,
       };
     }
+
     case "load-wordpack": {
       return {
         ...state,
         wordpack: action.wordpack,
       };
     }
+
     case "end-game": {
       if (state.phase !== "in-game") {
         return state;
@@ -65,14 +66,25 @@ function reducer(state: State, action: Action): State {
         wordpack: state.wordpack,
       };
     }
+
     case "get-hint": {
       if (state.phase !== "in-game") {
         return state;
       }
+      if (state.revealed_letters + 1 === state.goal.length) {
+        return {
+          ...newWordState(state.wordpack),
+          score: state.score,
+        };
+      }
       return {
         ...state,
-        letters_revealed: state.letters_revealed+1
-      }
+        revealed_letters: state.revealed_letters + 1,
+        scrambled:
+          state.goal.slice(0, state.revealed_letters + 1) +
+          scrambleWord(state.goal.slice(state.revealed_letters + 1)),
+        guess: state.goal.slice(0, state.revealed_letters + 1),
+      };
     }
   }
   return state;

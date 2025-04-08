@@ -40,7 +40,10 @@ function App() {
     case "in-game": {
       content = (
         <>
-          <div>Scrambled Word: {state.scrambled}</div>
+          <div>
+            Scrambled Word: {state.goal.slice(0, state.revealed_letters)}{" "}
+            {state.scrambled.slice(state.revealed_letters)}
+          </div>
           <label>
             Guess:
             <input
@@ -51,11 +54,11 @@ function App() {
               }
             />
           </label>
+          <button onClick={() => dispatch({ type: "get-hint" })}>
+            Get Hint
+          </button>
           <button onClick={() => dispatch({ type: "end-game" })}>
             End Game
-          </button>
-          <button onClick={() => dispatch({type: "get-hint"})}>
-            Get Hint
           </button>
         </>
       );

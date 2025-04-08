@@ -11,7 +11,7 @@ type State = Readonly<
       guess: string;
       score: number;
       wordpack: WordPack;
-      letters_revealed: number;
+      revealed_letters: number;
     }
   | {
       phase: "post-game";
@@ -39,4 +39,6 @@ type Action =
       type: "get-hint";
     };
 
-export type { WordPack, Action, State };
+type InGameState = Extract<State, { phase: "in-game" }>;
+
+export type { WordPack, Action, State, InGameState };
