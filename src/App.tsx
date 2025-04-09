@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
 import { reducer, getInitialState } from "./reducer";
+import {pluralize} from "./util"
 
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
@@ -81,7 +82,7 @@ function App() {
     case "post-game": {
       content = (
         <>
-          <div>Nice game! You guessed {state.score} words right!</div>
+          <div>Nice game! You guessed {pluralize(state.score, "word")} right!</div>
           <button onClick={() => dispatch({ type: "start-game" })} autoFocus>
             Begin new game
           </button>
