@@ -1,5 +1,47 @@
-import { State, Action, WordPack, InGameState } from "./types";
 import { getRandom, scrambleWord, wordsMatch } from "./util";
+
+type WordPack = readonly string[];
+type State = Readonly<
+  | {
+      phase: "pre-game";
+      wordpack: WordPack | null;
+    }
+  | {
+      phase: "in-game";
+      goal: string;
+      scrambled: string;
+      guess: string;
+      score: number;
+      wordpack: WordPack;
+      revealed_letters: number;
+    }
+  | {
+      phase: "post-game";
+      score: number;
+      wordpack: WordPack;
+    }
+>;
+
+type Action =
+  | {
+      type: "start-game";
+    }
+  | {
+      type: "update-guess";
+      newGuess: string;
+    }
+  | {
+      type: "load-wordpack";
+      wordpack: WordPack;
+    }
+  | {
+      type: "end-game";
+    }
+  | {
+      type: "get-hint";
+    };
+
+type InGameState = Extract<State, { phase: "in-game" }>;
 
 function getInitialState(): State {
   return {
@@ -98,3 +140,4 @@ function reducer(state: State, action: Action): State {
 }
 
 export { reducer, getInitialState };
+export type { WordPack, Action, State, InGameState };

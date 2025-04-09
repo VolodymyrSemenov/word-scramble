@@ -9,11 +9,6 @@ function scrambleWord(word: string): string {
     const goodLetters = word.length - idx; // Letters from the front that can be used
     let chosenIdx = Math.floor(Math.random() * goodLetters);
 
-    if (chosenIdx === idx) {
-      // Prevents outputting unscrambled word
-      chosenIdx = (chosenIdx + 1) % goodLetters;
-    }
-
     ret.push(letters[chosenIdx]);
 
     // Swap with last goodLetter
@@ -22,13 +17,20 @@ function scrambleWord(word: string): string {
       letters[chosenIdx],
     ];
   });
-  return ret.join("");
+
+  const combinedWord = ret.join("");
+  if (combinedWord === word && new Set(word).size > 1) {
+    return scrambleWord(word);
+  }
+  return combinedWord;
 }
 
 function wordsMatch(word1: string, word2: string): boolean {
-  const word1Cleaned = word1.trim().toUpperCase().replace(/ +/, " ");
-  const word2Cleaned = word2.trim().toUpperCase().replace(/ +/, " ");
-  return word1Cleaned === word2Cleaned;
+  return cleanString(word1) === cleanString(word2);
+}
+
+function cleanString(word: string): string {
+  return word.trim().toUpperCase().replace(/ +/, " ");
 }
 
 export { getRandom, scrambleWord, wordsMatch };

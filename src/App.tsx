@@ -7,7 +7,7 @@ function App() {
   const guessInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    fetch("./wordle_answers.txt")
+    fetch(process.env.PUBLIC_URL + "/wordle_answers.txt")
       .then((response) => response.text())
       .then((text) => {
         dispatch({
