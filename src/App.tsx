@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
 import { reducer, getInitialState } from "./reducer";
-import {pluralize} from "./util"
+import { pluralize, cleanString, processWordpack } from "./util";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, null, getInitialState);
@@ -13,10 +13,18 @@ function App() {
       .then((text) => {
         dispatch({
           type: "load-wordpack",
-          wordpack: text
-            .split("\n")
-            .map((word) => word.toUpperCase().trim())
-            .filter(Boolean),
+          wordpack: processWordpack(text),
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("https://unpkg.com/naughty-words@1.2.0/en.json")
+      .then((response) => response.json())
+      .then((array) => {
+        dispatch({
+          type: "load-bannedwords",
+          wordpack: array.map((word: string) => cleanString(word)),
         });
       });
   }, []);
@@ -24,8 +32,8 @@ function App() {
   let content = null;
   switch (state.phase) {
     case "pre-game": {
-      if (state.wordpack === null) {
-        content = <div>Loading Wordpack...</div>;
+      if (state.wordpack === null || state.bannedWords === null) {
+        content = <div>Loading Resources...</div>;
         break;
       }
       content = (
@@ -42,9 +50,9 @@ function App() {
           <div>
             Scrambled Word:{" "}
             <span className="GuessedText">
-              {state.goal.slice(0, state.revealed_letters)}
+              {state.goal.slice(0, state.revealedLetters)}
             </span>
-            {state.scrambled.slice(state.revealed_letters)}
+            {state.scrambled.slice(state.revealedLetters)}
           </div>
           <label>
             Guess:
@@ -82,7 +90,9 @@ function App() {
     case "post-game": {
       content = (
         <>
-          <div>Nice game! You guessed {pluralize(state.score, "word")} right!</div>
+          <div>
+            Nice game! You guessed {pluralize(state.score, "word")} right!
+          </div>
           <button onClick={() => dispatch({ type: "start-game" })} autoFocus>
             Begin new game
           </button>
