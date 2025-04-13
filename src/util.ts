@@ -41,7 +41,7 @@ function cleanString(word: string): string {
 // Monarch shoud be monarch but becomes Monarches. Soft vs hard ch
 // f/ef endings can be add s or replace f/ef for ves
 function pluralize(num: number, word: string): string {
-  if (num == 1) {
+  if (num === 1) {
     return "1 " + word;
   }
   let pluralized_form = word + "s"; // Base rule add s
