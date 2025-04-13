@@ -24,7 +24,7 @@ function App() {
       .then((array) => {
         dispatch({
           type: "load-bannedwords",
-          wordpack: array.map((word: string) => cleanString(word)),
+          bannedWords: new Set(array.map((word: string) => cleanString(word))),
         });
       });
   }, []);

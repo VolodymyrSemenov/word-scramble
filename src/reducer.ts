@@ -1,11 +1,12 @@
 import { getRandom, scrambleWord, wordsMatch } from "./util";
 
 type WordPack = readonly string[];
+type BannedWords = Set<string>;
 type State = Readonly<
   | {
       phase: "pre-game";
       wordpack: WordPack | null;
-      bannedWords: WordPack | null;
+      bannedWords: BannedWords | null;
     }
   | {
       phase: "in-game";
@@ -15,13 +16,13 @@ type State = Readonly<
       score: number;
       revealedLetters: number;
       wordpack: WordPack;
-      bannedWords: WordPack;
+      bannedWords: BannedWords;
     }
   | {
       phase: "post-game";
       score: number;
       wordpack: WordPack;
-      bannedWords: WordPack;
+      bannedWords: BannedWords;
     }
 >;
 
@@ -39,7 +40,7 @@ type Action =
     }
   | {
       type: "load-bannedwords";
-      wordpack: WordPack;
+      bannedWords: BannedWords;
     }
   | {
       type: "end-game";
@@ -64,11 +65,11 @@ function newWordState(state: State): InGameState {
     phase: "in-game",
     goal: newWord,
     guess: "",
-    scrambled: scrambleWord(newWord),
+    scrambled: scrambleWord(newWord, state.bannedWords ?? new Set()),
     score: 0,
     revealedLetters: 0,
     wordpack: state.wordpack ?? [],
-    bannedWords: state.bannedWords ?? [],
+    bannedWords: state.bannedWords ?? new Set(),
   };
 }
 
@@ -120,7 +121,7 @@ function reducer(state: State, action: Action): State {
     case "load-bannedwords": {
       return {
         ...state,
-        bannedWords: action.wordpack,
+        bannedWords: action.bannedWords,
       };
     }
 
@@ -151,7 +152,10 @@ function reducer(state: State, action: Action): State {
         revealedLetters: state.revealedLetters + 1,
         scrambled:
           state.goal.slice(0, state.revealedLetters + 1) +
-          scrambleWord(state.goal.slice(state.revealedLetters + 1)),
+          scrambleWord(
+            state.goal.slice(state.revealedLetters + 1),
+            state.bannedWords,
+          ),
         guess: state.goal.slice(0, state.revealedLetters + 1),
       };
     }
@@ -160,4 +164,4 @@ function reducer(state: State, action: Action): State {
 }
 
 export { reducer, getInitialState };
-export type { WordPack, Action, State, InGameState };
+export type { WordPack, Action, State, InGameState, BannedWords };

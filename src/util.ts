@@ -1,10 +1,10 @@
-import { WordPack } from "./reducer";
+import { WordPack, BannedWords } from "./reducer";
 
 function getRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function scrambleWord(word: string): string {
+function scrambleWord(word: string, bannedWords: BannedWords): string {
   let ret: string[] = [];
   let letters = Array.from(word);
   letters.forEach((_, idx) => {
@@ -22,7 +22,10 @@ function scrambleWord(word: string): string {
 
   const combinedWord = ret.join("");
   if (combinedWord === word && new Set(word).size > 1) {
-    return scrambleWord(word);
+    return scrambleWord(word, bannedWords);
+  }
+  if (bannedWords.has(combinedWord)) {
+    return scrambleWord(word, bannedWords);
   }
   return combinedWord;
 }
